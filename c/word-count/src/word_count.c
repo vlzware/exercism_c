@@ -25,7 +25,7 @@ void free_tree(struct tnode *p);
 int main(void)
 {
 	word_count_word_t buf[MAX_WORDS];
-	int res = word_count("Moin Trotel MOin MoiN trotel", buf);
+	int res = word_count("Moin Trotel MOin MoiN trotel tRotel", buf);
 	printf("count: %i\n", res);
 	int i = 0;
 	for (; i < res; i++)
@@ -70,6 +70,7 @@ struct tnode *addtree(struct tnode *p, char *word, int len, int *wcount,
 		words[p->pos].count++;	/* repeated word */
 
 	} else if (cond < 0) {
+		/* TODO: HERE IT IS */
 		p->left = addtree(p->left, word, len, wcount, words);
 
 	} else {
