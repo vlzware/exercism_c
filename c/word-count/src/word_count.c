@@ -55,8 +55,6 @@ int word_count(const char *input_text, word_count_word_t * words)
 		}
 	}
 	free_tree(root);
-	if (wlen < 0)
-		return wlen;
 	return wcount;
 }
 
