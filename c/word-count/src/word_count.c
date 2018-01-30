@@ -22,19 +22,23 @@ struct tnode *addtree(struct tnode *p, char *word, int len, int *wcount,
 struct tnode *talloc(void);
 void free_tree(struct tnode *p);
 
+/*
 int main(void)
 {
 	word_count_word_t buf[MAX_WORDS];
-	int res = word_count("Moin Trotel MOin MoiN trotel tRotel", buf);
+	int res = word_count("one of each", buf);
 	printf("count: %i\n", res);
 	int i = 0;
 	for (; i < res; i++)
 		printf("idx: %i c: %i  %s\n", i, buf[i].count, buf[i].text);
 	return 0;
-}
+}*/
 
 int word_count(const char *input_text, word_count_word_t * words)
 {
+	int i;
+	for (i = 0; i < MAX_WORDS; i++)
+		words[i].text[0] = '\0';
 	int wlen;			/* length of the current word */
 	int wcount = 0;			/* word counter */
 	char word[MAX_WORD_LENGTH + 1];	/* word buffer */
@@ -74,7 +78,7 @@ struct tnode *addtree(struct tnode *p, char *word, int len, int *wcount,
 		p->left = addtree(p->left, word, len, wcount, words);
 
 	} else {
-		p->right = addtree(p->left, word, len, wcount, words);
+		p->right = addtree(p->right, word, len, wcount, words);
 	}
 
 	return p;
