@@ -19,35 +19,41 @@ struct tnode {
 int getword(const char *input, int *idx, char *word, int lim);
 struct tnode *addtree(struct tnode *p, char *word, int len, int *wcount,
 		      word_count_word_t * words);
-struct tnode *talloc(void);
 void free_tree(struct tnode *p);
 
-/*
+#ifdef TESTING
 int main(void)
 {
 	word_count_word_t buf[MAX_WORDS];
-	int res = word_count("one of each", buf);
+	int res = word_count("one,\ntwo,\nthree", buf);
 	printf("count: %i\n", res);
 	int i = 0;
 	for (; i < res; i++)
 		printf("idx: %i c: %i  %s\n", i, buf[i].count, buf[i].text);
 	return 0;
-}*/
+}
+#endif
 
 int word_count(const char *input_text, word_count_word_t * words)
 {
-	int i;
-	for (i = 0; i < MAX_WORDS; i++)
-		words[i].text[0] = '\0';
+	memset(words, 0, MAX_WORDS * sizeof(*words));
 	int wlen;			/* length of the current word */
 	int wcount = 0;			/* word counter */
 	char word[MAX_WORD_LENGTH + 1];	/* word buffer */
 	struct tnode *root = NULL;	/* tree root */
 	int idx = 0;			/* index in input_text */
 
-	while ((wlen = getword(input_text, &idx, word, MAX_WORD_LENGTH)) > 0)
-		if ((root = addtree(root, word, wlen, &wcount, words)) == NULL)
+	while ((wlen = getword(input_text, &idx, word, MAX_WORD_LENGTH)) > 0) {
+		if (wcount == MAX_WORDS) {
+			free_tree(root);
+			return EXCESSIVE_NUMBER_OF_WORDS;
+		}
+		if ((root = addtree(root, word, wlen, &wcount, words))
+			== NULL) {
+			free_tree(root);
 			return MEMORY_ERROR;
+		}
+	}
 	free_tree(root);
 	if (wlen < 0)
 		return wlen;
@@ -60,13 +66,15 @@ struct tnode *addtree(struct tnode *p, char *word, int len, int *wcount,
 {
 	int cond;
 	if (p == NULL) {	/* new word arrived */
-		p = talloc();	/* make a new node */
-		if (p == NULL)
+		p = (struct tnode *)malloc(sizeof(struct tnode));
+		if (p == NULL) {
+			fprintf(stderr, "Memory error!\n");
 			return NULL;
+		}
 		p->left = NULL;
 		p->right = NULL;
 		p->pos = *wcount;
-		strncpy(words[*wcount].text, word, len);
+		strncpy(words[*wcount].text, word, len + 1);
 		words[p->pos].count = 1;
 		(*wcount)++;
 
@@ -74,22 +82,11 @@ struct tnode *addtree(struct tnode *p, char *word, int len, int *wcount,
 		words[p->pos].count++;	/* repeated word */
 
 	} else if (cond < 0) {
-		/* TODO: HERE IT IS */
 		p->left = addtree(p->left, word, len, wcount, words);
 
 	} else {
 		p->right = addtree(p->right, word, len, wcount, words);
 	}
-
-	return p;
-}
-
-/* talloc: make a tnode */
-struct tnode *talloc(void)
-{
-	struct tnode *p = (struct tnode *)malloc(sizeof(struct tnode));
-	if (p == NULL)
-		fprintf(stderr, "Memory error!\n");
 
 	return p;
 }
@@ -125,13 +122,15 @@ int getword(const char *input, int *idx, char *word, int lim)
 	while (!done) {
 		if (isalnum(input[*idx])) {
 			*w++ = tolower(input[(*idx)++]);
-			wlen++;
-
+			if (wlen == lim) {
+				*w = '\0';
+				return EXCESSIVE_LENGTH_WORD;
+			} else {
+				wlen++;
+			}
 		} else {
 			done = true;
 		}
-		if (wlen == lim)
-			return EXCESSIVE_LENGTH_WORD;
 
 	}
 	*w = '\0';
