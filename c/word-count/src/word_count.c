@@ -1,7 +1,3 @@
-/**
- * Loosely based on the logic from K&R Exercise 6.4
- */
-
 #include "word_count.h"
 #include <string.h>
 #include <ctype.h>
@@ -20,19 +16,6 @@ int getword(const char *input, int *idx, char *word, int lim);
 struct tnode *addtree(struct tnode *p, char *word, int len, int *wcount,
 		      word_count_word_t * words);
 void free_tree(struct tnode *p);
-
-#ifdef TESTING
-int main(void)
-{
-	word_count_word_t buf[MAX_WORDS];
-	int res = word_count("one,\ntwo,\nthree", buf);
-	printf("count: %i\n", res);
-	int i = 0;
-	for (; i < res; i++)
-		printf("idx: %i c: %i  %s\n", i, buf[i].count, buf[i].text);
-	return 0;
-}
-#endif
 
 int word_count(const char *input_text, word_count_word_t * words)
 {
@@ -105,7 +88,7 @@ void free_tree(struct tnode *p)
 	}
 }
 
-/* getword: get a word from 'input' into 'word' */
+/* getword: get a word from 'input' into 'word' up to 'lim' length */
 int getword(const char *input, int *idx, char *word, int lim)
 {
 	int wlen = 0;
@@ -127,6 +110,15 @@ int getword(const char *input, int *idx, char *word, int lim)
 				return EXCESSIVE_LENGTH_WORD;
 			} else {
 				wlen++;
+			}
+		} else if (input[*idx] == '\'') {
+			if ((wlen > 1)  && isalnum(input[*idx - 1]) &&
+				(wlen < lim -1) && isalnum(input[*idx +1])) {
+				*w++ = '\'';
+				(*idx)++;
+				wlen++;
+			} else {
+				done = true;
 			}
 		} else {
 			done = true;
