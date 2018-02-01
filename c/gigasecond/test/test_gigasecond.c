@@ -32,7 +32,7 @@ void test_date(void)
 
 void test_another_date(void)
 {
-   TEST_IGNORE();               // delete this line to run test
+   // TEST_IGNORE();               // delete this line to run test
    time_t expected = construct_date(2009, 2, 19, 1, 46, 40);
    time_t actual = gigasecond_after(construct_date(1977, 6, 13, 0, 0, 0));
    TEST_ASSERT(expected == actual);
@@ -40,7 +40,7 @@ void test_another_date(void)
 
 void test_third_date(void)
 {
-   TEST_IGNORE();
+   // TEST_IGNORE();
    time_t expected = construct_date(1991, 3, 27, 1, 46, 40);
    time_t actual = gigasecond_after(construct_date(1959, 7, 19, 0, 0, 0));
    TEST_ASSERT(expected == actual);
@@ -48,7 +48,7 @@ void test_third_date(void)
 
 void test_date_and_time(void)
 {
-   TEST_IGNORE();
+   // TEST_IGNORE();
    time_t expected = construct_date(2046, 10, 2, 23, 46, 40);
    time_t actual = gigasecond_after(construct_date(2015, 1, 24, 22, 0, 0));
    TEST_ASSERT(expected == actual);
@@ -56,20 +56,18 @@ void test_date_and_time(void)
 
 void test_date_and_time_with_day_rollover(void)
 {
-   TEST_IGNORE();
+   // TEST_IGNORE();
    time_t expected = construct_date(2046, 10, 3, 1, 46, 39);
    time_t actual = gigasecond_after(construct_date(2015, 1, 24, 23, 59, 59));
    TEST_ASSERT(expected == actual);
 }
 
-/*
 void test_your_birthday(void)
 {
    time_t birthday = construct_date(1989, 1, 1, 1, 1, 1);
    time_t gigday = gigasecond_after(birthday);
    printf("%s", ctime(&gigday));
 }
-*/
 
 int main(void)
 {
@@ -80,7 +78,7 @@ int main(void)
    RUN_TEST(test_third_date);
    RUN_TEST(test_date_and_time);
    RUN_TEST(test_date_and_time_with_day_rollover);
-   //RUN_TEST(test_your_birthday);
+   RUN_TEST(test_your_birthday);
 
    UnityEnd();
    return 0;
