@@ -1,5 +1,5 @@
 #include "hamming.h"
-#include <string.h>
+#include <stddef.h>
 
 int compute(const char *dna_a, const char *dna_b)
 {
