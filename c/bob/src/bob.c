@@ -13,47 +13,32 @@
  */
 char *hey_bob(const char *sentence)
 {
-	/* check input */
-	if (sentence == NULL || *sentence == '\0')
+	if (sentence == NULL)
 		return (char*) FINE;
 
 	char *tmp = (char*) sentence;
+	int alphas = 0;
+	int uppers = 0;
+	char lastch = ' ';
 
-	/* consume whitespace/silence */
-	while (isspace(*tmp++))
-		;
-	if (*tmp == '\0')
-		return (char*) FINE;
-
-	/* try to start with an alpha */
-	char q = 0;
-	while (*tmp && !isalpha(*tmp)) {
-		if (*tmp == '?')
-			q = 1;
+	while (*tmp) {
+		if (!isspace(*tmp)) {
+			lastch = *tmp;
+			if (isalpha(*tmp)) {
+				alphas++;
+				if (isupper(*tmp))
+					uppers++;
+			}
+		}
 		tmp++;
 	}
-	/* no alpha in sentence */
-	if (*tmp == '\0')
-		return q ? (char*) SURE : (char*) WTEVER;
 
-	/* parse the rest */
-	int yelling = (isupper(*tmp++));
-	while (*tmp) {
-		if (isalpha(*tmp) && islower(*tmp))
-			yelling = 0;
-		/* yelling has precedence over question */
-		if (*tmp == '?' && !yelling) {
-			while (isspace(*++tmp))
-				;
-			if (*tmp == '\0')
-				return (char*) SURE;
-		} else {
-			tmp++;
-		}
-	}
-
-	if (yelling)
+	if (alphas && alphas == uppers)
 		return (char*) WHOA;
+	if (lastch == '?')
+		return (char*) SURE;
+	if (lastch == ' ')
+		return (char*) FINE;
 
 	return (char*) WTEVER;
 }
