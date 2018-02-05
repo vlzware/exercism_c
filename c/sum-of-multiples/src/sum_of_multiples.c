@@ -1,46 +1,36 @@
 #include "sum_of_multiples.h"
 #include <stddef.h>
 
-#ifndef BRUTEFORCE
 int alg_sum(int n)
 {
-	return (n * (n + 1))/2;
+	return n * (n + 1) / 2;
 }
-/* sum_of_multiples - mathematical approach */
-/* would be usable if the elements are allowed to repeat */
+
+/* sum of multiples - mathematical approach */
 int sum_of_multiples(const unsigned int *multiples, const int count,
 		    const int n)
 {
 	if (multiples == NULL || count == 0)
 		return 0;
 
-	int i, res = 0;
-	for (i = 0; i < count; i++) {
-		if (multiples[i])
-			res += multiples[i] * alg_sum((int) n/multiples[i]);
+	int i = 0, res = 0, multis = 1;
+	for (; i < count; i++) {
+		if (multiples[i] != 0) {
+			res += multiples[i] * alg_sum((n - 1)/multiples[i]);
+			multis *= multiples[i];
+		}
 	}
-
+	if (count > 1)
+		res -= multis * alg_sum((n - 1) / multis);
 	return res;
 }
-#endif
 
-#ifdef BRUTEFORCE
-/* sum_of_multiples - brute force approach */
-int sum_of_multiples(const unsigned int *multiples, const int count,
-		    const int n)
+#ifndef PROBLEM_TEST
+#include <stdio.h>
+int main (void)
 {
-	if (multiples == NULL || count == 0)
-		return 0;
-
-	int i, k, f, res = 0;
-	for (i = 1; i < n; i++) {
-		f = 0;
-		for (k = 0; k < count; k++)
-			if (!f && multiples[k] && !(i % multiples[k])) {
-				res += i;
-				f = 1;
-			}
-	}
-	return res;
+	const unsigned int m[] = {4,6};
+	printf("%i\n", sum_of_multiples(m, 2, 15));
+	return 0;
 }
 #endif
