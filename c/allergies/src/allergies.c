@@ -2,16 +2,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define ALL 8 /* all allergens */
-
 bool is_allergic_to(allergen_t allergen, int score)
 {
 	if (score < 0) {
 		fprintf(stderr, "Invalid score\n");
 		return false;
 	}
-	int a = 1 << allergen;
-	return (score & a) == a;
+	return (score & (1 << allergen));
 }
 
 void get_allergens(int score, allergen_list_t *list)
@@ -21,20 +18,6 @@ void get_allergens(int score, allergen_list_t *list)
 		return;
 	}
 
-	int all[ALL] = {0};
-
-	/* get count */
-	list->count = 0;
-	int i, a;
-	for (i = 0; i <= ALL - 1; i++) {
-		a = 1 << i;
-		if ((score & a) == a) {
-			list->count++;
-			all[i] = 1;
-		}
-	}
-
-	/* alloc */
 	list->allergens =
 		(allergen_t *) malloc(list->count * sizeof(allergen_t));
 	if (list->allergens == NULL) {
@@ -42,9 +25,11 @@ void get_allergens(int score, allergen_list_t *list)
 		return;
 	}
 
-	/* fill */
-	int k = 0;
-	for (i = 0; i <= ALL - 1; i++)
-		if (all[i])
-			list->allergens[k++] = (allergen_t) i;
+	list->count = 0;
+	int i;
+	for (i = 0; i <= ALLERGEN_COUNT - 1; i++) {
+		if ((score & (1 << i))) {
+			list->allergens[list->count++] = (allergen_t) i;
+		}
+	}
 }
