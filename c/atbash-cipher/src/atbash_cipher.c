@@ -17,7 +17,7 @@ void addspace(char **tmp, int *count)
 char *parse(char *input, int mode)
 {
 	int len = strlen(input);
-	char *tmp = (char*) malloc(len + mode * len/4 + 1);
+	char *tmp = (char*) malloc(len + mode * len/5 + 1);
 	if (tmp == NULL)
 		return NULL;
 
