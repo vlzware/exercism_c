@@ -40,7 +40,7 @@ static int plus1(int x)
 
 void test_compute_cells_calculate_initial_value(void)
 {
-   TEST_IGNORE();
+   // TEST_IGNORE();
    struct reactor *r = create_reactor();
    struct cell *input = create_input_cell(r, 1);
    struct cell *output = create_compute1_cell(r, input, plus1);
@@ -52,13 +52,13 @@ void test_compute_cells_calculate_initial_value(void)
 
 static int concat_digits(int a, int b)
 {
-   TEST_IGNORE();
+   // TEST_IGNORE();
    return b * 10 + a;
 }
 
 void test_compute_cells_take_inputs_in_the_right_order(void)
 {
-   TEST_IGNORE();
+   // TEST_IGNORE();
    struct reactor *r = create_reactor();
    struct cell *one = create_input_cell(r, 1);
    struct cell *two = create_input_cell(r, 2);
@@ -71,7 +71,7 @@ void test_compute_cells_take_inputs_in_the_right_order(void)
 
 void test_compute_cells_update_value_when_dependencies_are_changed(void)
 {
-   TEST_IGNORE();
+   // TEST_IGNORE();
    struct reactor *r = create_reactor();
    struct cell *input = create_input_cell(r, 1);
    struct cell *output = create_compute1_cell(r, input, plus1);
@@ -99,7 +99,7 @@ static int plus(int x, int y)
 
 void test_compute_cells_can_depend_on_other_compute_cells(void)
 {
-   TEST_IGNORE();
+   // TEST_IGNORE();
    struct reactor *r = create_reactor();
    struct cell *input = create_input_cell(r, 1);
    struct cell *times_two = create_compute1_cell(r, input, times2);
