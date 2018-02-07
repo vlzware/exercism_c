@@ -7,7 +7,7 @@ void check_alloc(void *p);
 series_results_t series(char *input_text, unsigned int substring_length)
 {
 	series_results_t res;
-	int len = strlen(input_text);
+	int len = (input_text == NULL)? 0 : strlen(input_text);
 	if (((int)substring_length > len) || (len == 0)
 		|| (substring_length == 0)) {
 		res.substring_count = 0;
