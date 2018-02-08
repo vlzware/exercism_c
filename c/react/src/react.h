@@ -1,10 +1,13 @@
 #ifndef REACT_H
 #define REACT_H
 
-#include <stddef.h>
+#define MAXCLB 5 /* max callbacks pro cell */
 
 typedef int (*compute1) (int);
 typedef int (*compute2) (int, int);
+
+typedef void (*callback) (void *, int);
+typedef int callback_id;
 
 enum compute_type {INPUT, ONE_VAR, TWO_VARS};
 
@@ -22,6 +25,9 @@ struct cell {
 	struct cell *dep_a;
 	struct cell *dep_b;
 	struct dep *deps;
+
+	callback clb[MAXCLB];
+	void *clb_obj[MAXCLB];
 };
 
 struct reactor {
@@ -39,9 +45,6 @@ struct cell *create_compute2_cell(struct reactor *, struct cell *,
 
 int get_cell_value(struct cell *);
 void set_cell_value(struct cell *, int new_value);
-
-typedef void (*callback) (void *, int);
-typedef int callback_id;
 
 // The callback should be called with the same void * given in add_callback.
 callback_id add_callback(struct cell *, void *, callback);

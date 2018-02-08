@@ -34,6 +34,9 @@ struct cell *create_input_cell(struct reactor *r, int initial_value)
 	tmp->val = initial_value;
 	tmp->type = INPUT;
 	tmp->deps = NULL;
+	int i;
+	for (i = 0; i < MAXCLB; i++)
+		tmp->clb[i] = NULL;
 
 	r->head = tmp;
 
@@ -86,20 +89,35 @@ void set_cell_value(struct cell *c, int new_value)
 	if (c->val != new_value) {
 		c->val = new_value;
 		call_deps(c);
+		int i;
+		for (i = 0; i < MAXCLB; i++)
+			if (c->clb[i] != NULL)
+				c->clb[i](c->clb_obj[i], c->val);
 	}
 }
 
 callback_id add_callback(struct cell *c, void *v, callback call)
 {
-	c = c; v = v; call = call;
-
 	callback_id res = 0;
+	while ((res < MAXCLB) && (c->clb[res] != NULL))
+		res++;
+	if (res == MAXCLB) {
+		fprintf(stderr, "MAXCLB reached!\n");
+		return -1;
+	}
+
+	c->clb[res] = call;
+	c->clb_obj[res] = v;
+
 	return res;
 }
 
 void remove_callback(struct cell *c, callback_id id)
 {
-	c = c; id= id;
+	if (id < 0 || id >= MAXCLB)
+		return;
+
+	c->clb[id] = NULL;
 }
 
 
@@ -154,10 +172,11 @@ void call_deps(struct cell *c)
 	while (dp != NULL) {
 		struct cell *tmp = dp->dep;
 		if (tmp->type == ONE_VAR)
-			set_cell_value(tmp, tmp->fun1(c->val));
+			set_cell_value(tmp,
+				tmp->fun1(c->val));
 		else if (tmp->type == TWO_VARS)
-			set_cell_value(tmp, tmp->fun2(tmp->dep_a->val,
-				  tmp->dep_b->val));
+			set_cell_value(tmp,
+				tmp->fun2(tmp->dep_a->val, tmp->dep_b->val));
 		dp = dp->next;
 	}
 }
@@ -167,10 +186,6 @@ static int times2(int x)
 {
    return x * 2;
 }
-// static int times30(int x)
-// {
-//    return x * 30;
-// }
 static int plus(int x, int y)
 {
    return x + y;
@@ -178,10 +193,14 @@ static int plus(int x, int y)
 struct reactor *r;
 int main(void)
 {
-	r = 			create_reactor();
-	struct cell *input = 	create_input_cell(r, 1);
-	struct cell *times_two= create_compute1_cell(r, input, times2);
-	struct cell *output = 	create_compute2_cell(r, input, times_two, plus);
+	r =
+		create_reactor();
+	struct cell *input =
+		create_input_cell(r, 1);
+	struct cell *times_two =
+		create_compute1_cell(r, input, times2);
+	struct cell *output =
+		create_compute2_cell(r, input, times_two, plus);
 
 	printf("32? %i\n", get_cell_value(output));
 	set_cell_value(input, 3);
