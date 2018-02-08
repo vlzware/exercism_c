@@ -117,18 +117,18 @@ void check_alloc(void *p)
 	}
 }
 
-void free_list(struct cell* p)
+void free_list(struct cell *p)
 {
 	if (p != NULL) {
 		if (p->deps != NULL)
 			free_deps(p->deps);
 		if (p->next != NULL)
-			free(p->next);
+			free_list(p->next);
 		free(p);
 	}
 }
 
-void free_deps(struct dep* p)
+void free_deps(struct dep *p)
 {
 	if (p->next != NULL)
 		free_deps(p->next);
@@ -157,12 +157,12 @@ void call_deps(struct cell *c)
 			set_cell_value(tmp, tmp->fun1(c->val));
 		else if (tmp->type == TWO_VARS)
 			set_cell_value(tmp, tmp->fun2(tmp->dep_a->val,
-				  tmp->dep_a->val));
+				  tmp->dep_b->val));
 		dp = dp->next;
 	}
 }
 
-#ifndef TTT
+#ifdef TTT
 static int times2(int x)
 {
    return x * 2;
@@ -175,17 +175,17 @@ static int plus(int x, int y)
 {
    return x + y;
 }
+struct reactor *r;
 int main(void)
 {
-	struct reactor *r = 	create_reactor();
+	r = 			create_reactor();
 	struct cell *input = 	create_input_cell(r, 1);
-	struct cell *times_two =create_compute1_cell(r, input, times2);
+	struct cell *times_two= create_compute1_cell(r, input, times2);
 	struct cell *output = 	create_compute2_cell(r, input, times_two, plus);
 
 	printf("32? %i\n", get_cell_value(output));
 	set_cell_value(input, 3);
 	printf("96? %i\n", get_cell_value(output));
-
 	destroy_reactor(r);
 
 	return 0;
