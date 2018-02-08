@@ -1,7 +1,7 @@
 #ifndef REACT_H
 #define REACT_H
 
-#define MAXCLB 5 /* max callbacks pro cell */
+#define MAXCLB 5 	/* max callbacks pro cell */
 
 typedef int (*compute1) (int);
 typedef int (*compute2) (int, int);
@@ -19,15 +19,19 @@ struct dep {
 struct cell {
 	int val;
 	struct cell *next;
+
 	enum compute_type type;
 	compute1 fun1;
 	compute2 fun2;
 	struct cell *dep_a;
 	struct cell *dep_b;
+
 	struct dep *deps;
 
 	callback clb[MAXCLB];
 	void *clb_obj[MAXCLB];
+
+	int clb_fire;
 };
 
 struct reactor {

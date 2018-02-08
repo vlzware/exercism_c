@@ -7,10 +7,14 @@ void free_list(struct cell* p);
 void free_deps(struct dep* p);
 int add_deps(struct cell *c, struct cell *dst);
 void call_deps(struct cell *c);
+void scv_recurse(struct cell *c, int new_value);
+void set_state(struct cell *p);
+void parse_state(struct cell *p);
+
+struct reactor *r;
 
 struct reactor *create_reactor()
 {
-	struct reactor *r;
 	r = (struct reactor*) malloc(sizeof(struct reactor));
 	check_alloc(r);
 
@@ -84,16 +88,11 @@ int get_cell_value(struct cell *c)
 
 void set_cell_value(struct cell *c, int new_value)
 {
-	if (c == NULL)
-		return;
-	if (c->val != new_value) {
-		c->val = new_value;
-		call_deps(c);
-		int i;
-		for (i = 0; i < MAXCLB; i++)
-			if (c->clb[i] != NULL)
-				c->clb[i](c->clb_obj[i], c->val);
-	}
+	set_state(r->head);
+
+	scv_recurse(c, new_value);
+
+	parse_state(r->head);
 }
 
 callback_id add_callback(struct cell *c, void *v, callback call)
@@ -114,8 +113,10 @@ callback_id add_callback(struct cell *c, void *v, callback call)
 
 void remove_callback(struct cell *c, callback_id id)
 {
-	if (id < 0 || id >= MAXCLB)
+	if (id < 0 || id >= MAXCLB) {
+		fprintf(stderr, "Invalid callback_id!\n");
 		return;
+	}
 
 	c->clb[id] = NULL;
 }
@@ -127,6 +128,45 @@ void remove_callback(struct cell *c, callback_id id)
  ****************************************************
  */
 
+void set_state(struct cell *p)
+{
+	if (p == NULL)
+	 	return;
+
+	if (p->next != NULL)
+		set_state(p->next);
+
+	p->clb_fire = 0;
+}
+
+void parse_state(struct cell *p)
+{
+	if (p == NULL)
+		return;
+
+	if (p->next != NULL)
+		parse_state(p->next);
+
+	if (p->clb_fire == 0)
+	 	return;
+
+	int i;
+	for (i = 0; i < MAXCLB; i++)
+		if (p->clb[i] != NULL)
+			p->clb[i](p->clb_obj[i], p->val);
+}
+
+ /* set cell value recursively */
+ void scv_recurse(struct cell *c, int new_value)
+ {
+ 	if ((c == NULL) || (c->val == new_value))
+ 		return;
+
+	c->val = new_value;
+	call_deps(c);
+	c->clb_fire = 1;
+ }
+
 void check_alloc(void *p)
 {
 	if (p == NULL) {
@@ -137,13 +177,16 @@ void check_alloc(void *p)
 
 void free_list(struct cell *p)
 {
-	if (p != NULL) {
-		if (p->deps != NULL)
-			free_deps(p->deps);
-		if (p->next != NULL)
-			free_list(p->next);
-		free(p);
-	}
+	if (p == NULL)
+		return;
+
+	if (p->deps != NULL)
+		free_deps(p->deps);
+
+	if (p->next != NULL)
+		free_list(p->next);
+
+	free(p);
 }
 
 void free_deps(struct dep *p)
@@ -172,10 +215,10 @@ void call_deps(struct cell *c)
 	while (dp != NULL) {
 		struct cell *tmp = dp->dep;
 		if (tmp->type == ONE_VAR)
-			set_cell_value(tmp,
+			scv_recurse(tmp,
 				tmp->fun1(c->val));
 		else if (tmp->type == TWO_VARS)
-			set_cell_value(tmp,
+			scv_recurse(tmp,
 				tmp->fun2(tmp->dep_a->val, tmp->dep_b->val));
 		dp = dp->next;
 	}
