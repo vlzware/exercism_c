@@ -8,8 +8,10 @@ typedef int (*compute2) (int, int);
 
 enum compute_type {INPUT, ONE_VAR, TWO_VARS};
 
-/* max count of cells that receive a signal */
-#define MAXDEPS 5
+struct dep {
+	struct dep *next;
+	struct cell *dep;
+};
 
 struct cell {
 	int val;
@@ -19,7 +21,7 @@ struct cell {
 	compute2 fun2;
 	struct cell *dep_a;
 	struct cell *dep_b;
-	struct cell *deps[MAXDEPS];
+	struct dep *deps;
 };
 
 struct reactor {

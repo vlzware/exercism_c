@@ -4,6 +4,7 @@
 
 void check_alloc(void *p);
 void free_list(struct cell* p);
+void free_deps(struct dep* p);
 int add_deps(struct cell *c, struct cell *dst);
 void call_deps(struct cell *c);
 
@@ -32,9 +33,7 @@ struct cell *create_input_cell(struct reactor *r, int initial_value)
 	tmp->next = r->head;
 	tmp->val = initial_value;
 	tmp->type = INPUT;
-	int i;
-	for (i = 0; i < MAXDEPS; i++)
-		tmp->deps[i] = NULL;
+	tmp->deps = NULL;
 
 	r->head = tmp;
 
@@ -120,36 +119,75 @@ void check_alloc(void *p)
 
 void free_list(struct cell* p)
 {
-	if (p->next == NULL)
+	if (p != NULL) {
+		if (p->deps != NULL)
+			free_deps(p->deps);
+		if (p->next != NULL)
+			free(p->next);
 		free(p);
-	else
-		free_list(p->next);
+	}
 }
+
+void free_deps(struct dep* p)
+{
+	if (p->next != NULL)
+		free_deps(p->next);
+	free(p);
+}
+
 
 int add_deps(struct cell *c, struct cell *dst)
 {
-	int i = 0;
-	while (c->deps[i] != NULL)
-		if (++i == MAXDEPS) {
-			fprintf(stderr, "Max deps reached\n");
-			return 1;
-		}
-	c->deps[i] = dst;
+	struct dep* tmp = (struct dep*) malloc(sizeof(struct dep));
+	check_alloc(tmp);
+
+	tmp->next = c->deps;
+	tmp->dep = dst;
+	c->deps = tmp;
+
 	return 0;
 }
 
 void call_deps(struct cell *c)
 {
-	int i;
-	struct cell *cd;
-	for (i = 0; i < MAXDEPS; i++) {
-		cd = c->deps[i];
-		if (cd != NULL) {
-			if (cd->type == ONE_VAR)
-				set_cell_value(cd, cd->fun1(c->val));
-			else if (cd->type == TWO_VARS)
-				set_cell_value(cd, cd->fun2(cd->dep_a->val,
-					  cd->dep_a->val));
-		}
+	struct dep *dp = c->deps;
+	while (dp != NULL) {
+		struct cell *tmp = dp->dep;
+		if (tmp->type == ONE_VAR)
+			set_cell_value(tmp, tmp->fun1(c->val));
+		else if (tmp->type == TWO_VARS)
+			set_cell_value(tmp, tmp->fun2(tmp->dep_a->val,
+				  tmp->dep_a->val));
+		dp = dp->next;
 	}
 }
+
+#ifndef TTT
+static int times2(int x)
+{
+   return x * 2;
+}
+// static int times30(int x)
+// {
+//    return x * 30;
+// }
+static int plus(int x, int y)
+{
+   return x + y;
+}
+int main(void)
+{
+	struct reactor *r = 	create_reactor();
+	struct cell *input = 	create_input_cell(r, 1);
+	struct cell *times_two =create_compute1_cell(r, input, times2);
+	struct cell *output = 	create_compute2_cell(r, input, times_two, plus);
+
+	printf("32? %i\n", get_cell_value(output));
+	set_cell_value(input, 3);
+	printf("96? %i\n", get_cell_value(output));
+
+	destroy_reactor(r);
+
+	return 0;
+}
+#endif
