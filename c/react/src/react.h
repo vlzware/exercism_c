@@ -1,7 +1,18 @@
+/**
+ * Design:
+ * reactor->head points to a linked list of all cell's
+ * each cell can be input, or two types of output (see compute_type)
+ * dep_a and dep_b point to the cells needed to calculate fun1/fun2
+ * deps is a linked list which contains every cell which depends on
+ * 	the content of the current cell
+ * each cell can have up to MAXCLB callbacks with their clb_obj
+ * clb_fire get set to 1 if the value got updated between state changes
+ */
+
 #ifndef REACT_H
 #define REACT_H
 
-#define MAXCLB 5 	/* max callbacks pro cell */
+#define MAXCLB 5 /* max callbacks pro cell */
 
 typedef int (*compute1) (int);
 typedef int (*compute2) (int, int);

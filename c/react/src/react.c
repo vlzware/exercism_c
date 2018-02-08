@@ -7,26 +7,35 @@ void free_list(struct cell* p);
 void free_deps(struct dep* p);
 int add_deps(struct cell *c, struct cell *dst);
 void call_deps(struct cell *c);
-void scv_recurse(struct cell *c, int new_value);
+void scv_helper(struct cell *c, int new_value);
 void set_state(struct cell *p);
 void parse_state(struct cell *p);
 
-struct reactor *r;
+struct reactor *r_global = NULL;
 
 struct reactor *create_reactor()
 {
-	r = (struct reactor*) malloc(sizeof(struct reactor));
-	check_alloc(r);
+	if (r_global != NULL) {
+		fprintf(stderr, "Only one reactor possible!\n");
+		return NULL;
+	}
+	r_global = (struct reactor*) malloc(sizeof(struct reactor));
+	check_alloc(r_global);
 
-	r->head = NULL;
+	r_global->head = NULL;
 
-	return r;
+	return r_global;
 }
 
 void destroy_reactor(struct reactor *r)
 {
-	free_list(r->head);
-	free(r);
+	if (r != r_global) {
+		fprintf(stderr, "Invalid reactor!\n");
+		return;
+	}
+	free_list(r_global->head);
+	free(r_global);
+	r_global = NULL;
 }
 
 struct cell *create_input_cell(struct reactor *r, int initial_value)
@@ -88,11 +97,11 @@ int get_cell_value(struct cell *c)
 
 void set_cell_value(struct cell *c, int new_value)
 {
-	set_state(r->head);
+	set_state(r_global->head);
 
-	scv_recurse(c, new_value);
+	scv_helper(c, new_value);
 
-	parse_state(r->head);
+	parse_state(r_global->head);
 }
 
 callback_id add_callback(struct cell *c, void *v, callback call)
@@ -150,20 +159,21 @@ void parse_state(struct cell *p)
 	if (p->clb_fire == 0)
 	 	return;
 
+	call_deps(p);
+
 	int i;
 	for (i = 0; i < MAXCLB; i++)
 		if (p->clb[i] != NULL)
 			p->clb[i](p->clb_obj[i], p->val);
 }
 
- /* set cell value recursively */
- void scv_recurse(struct cell *c, int new_value)
+ /* set cell values */
+ void scv_helper(struct cell *c, int new_value)
  {
  	if ((c == NULL) || (c->val == new_value))
  		return;
 
 	c->val = new_value;
-	call_deps(c);
 	c->clb_fire = 1;
  }
 
@@ -215,41 +225,11 @@ void call_deps(struct cell *c)
 	while (dp != NULL) {
 		struct cell *tmp = dp->dep;
 		if (tmp->type == ONE_VAR)
-			scv_recurse(tmp,
+			scv_helper(tmp,
 				tmp->fun1(c->val));
 		else if (tmp->type == TWO_VARS)
-			scv_recurse(tmp,
+			scv_helper(tmp,
 				tmp->fun2(tmp->dep_a->val, tmp->dep_b->val));
 		dp = dp->next;
 	}
 }
-
-#ifdef TTT
-static int times2(int x)
-{
-   return x * 2;
-}
-static int plus(int x, int y)
-{
-   return x + y;
-}
-struct reactor *r;
-int main(void)
-{
-	r =
-		create_reactor();
-	struct cell *input =
-		create_input_cell(r, 1);
-	struct cell *times_two =
-		create_compute1_cell(r, input, times2);
-	struct cell *output =
-		create_compute2_cell(r, input, times_two, plus);
-
-	printf("32? %i\n", get_cell_value(output));
-	set_cell_value(input, 3);
-	printf("96? %i\n", get_cell_value(output));
-	destroy_reactor(r);
-
-	return 0;
-}
-#endif
