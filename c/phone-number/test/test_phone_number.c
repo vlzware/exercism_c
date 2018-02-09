@@ -125,7 +125,7 @@ void test_invalid_with_right_number_of_digits_but_letters_mixed_in(void)
 
 void test_returns_area_code(void)
 {
-   TEST_IGNORE();
+   // TEST_IGNORE();
    const char input[] = "5024567890";
    const char expected[] = "502";
 
@@ -136,10 +136,9 @@ void test_returns_area_code(void)
 
 void test_formats_a_number(void)
 {
-   TEST_IGNORE();
+   // TEST_IGNORE();
    const char input[] = "1234567890";
    const char expected[] = "(123) 456-7890";
-
    result = phone_number_format(input);
 
    TEST_ASSERT_EQUAL_STRING(expected, result);
@@ -147,7 +146,7 @@ void test_formats_a_number(void)
 
 void test_cleans_number_before_formatting(void)
 {
-   TEST_IGNORE();
+   // TEST_IGNORE();
    const char input[] = "123-456-7890";
    const char expected[] = "(123) 456-7890";
 
