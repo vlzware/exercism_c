@@ -64,7 +64,7 @@ void test_on_the_hour(void)
 
 void test_past_the_hour(void)
 {
-   TEST_IGNORE();               // delete this line to run test
+   //TEST_IGNORE();               // delete this line to run test
    int hour = 11;
    int minute = 9;
    char *expected_clock_text = "11:09";
@@ -74,7 +74,7 @@ void test_past_the_hour(void)
 
 void test_midnight_is_zero_hours(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 24;
    int minute = 0;
    char *expected_clock_text = "00:00";
@@ -84,7 +84,7 @@ void test_midnight_is_zero_hours(void)
 
 void test_hour_rolls_over(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 25;
    int minute = 0;
    char *expected_clock_text = "01:00";
@@ -94,7 +94,7 @@ void test_hour_rolls_over(void)
 
 void test_hour_rolls_over_continuously(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 100;
    int minute = 0;
    char *expected_clock_text = "04:00";
@@ -104,7 +104,7 @@ void test_hour_rolls_over_continuously(void)
 
 void test_sixty_minutes_is_next_hour(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 1;
    int minute = 60;
    char *expected_clock_text = "02:00";
@@ -114,7 +114,7 @@ void test_sixty_minutes_is_next_hour(void)
 
 void test_minutes_roll_over(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 0;
    int minute = 160;
    char *expected_clock_text = "02:40";
@@ -124,7 +124,7 @@ void test_minutes_roll_over(void)
 
 void test_minutes_roll_over_continuously(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 0;
    int minute = 1723;
    char *expected_clock_text = "04:43";
@@ -134,7 +134,7 @@ void test_minutes_roll_over_continuously(void)
 
 void test_hour_and_minutes_roll_over(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 25;
    int minute = 160;
    char *expected_clock_text = "03:40";
@@ -144,7 +144,7 @@ void test_hour_and_minutes_roll_over(void)
 
 void test_hour_and_minutes_roll_over_continuously(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 201;
    int minute = 3001;
    char *expected_clock_text = "11:01";
@@ -154,7 +154,7 @@ void test_hour_and_minutes_roll_over_continuously(void)
 
 void test_hour_and_minutes_roll_over_to_exactly_midnight(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 72;
    int minute = 8640;
    char *expected_clock_text = "00:00";
@@ -164,7 +164,7 @@ void test_hour_and_minutes_roll_over_to_exactly_midnight(void)
 
 void test_negative_hour(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = -1;
    int minute = 15;
    char *expected_clock_text = "23:15";
@@ -174,7 +174,7 @@ void test_negative_hour(void)
 
 void test_negative_hour_rolls_over(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = -25;
    int minute = 0;
    char *expected_clock_text = "23:00";
@@ -184,7 +184,7 @@ void test_negative_hour_rolls_over(void)
 
 void test_negative_hour_rolls_over_continuously(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = -91;
    int minute = 0;
    char *expected_clock_text = "05:00";
@@ -194,7 +194,7 @@ void test_negative_hour_rolls_over_continuously(void)
 
 void test_negative_minutes(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 1;
    int minute = -40;
    char *expected_clock_text = "00:20";
@@ -204,7 +204,7 @@ void test_negative_minutes(void)
 
 void test_negative_minutes_roll_over(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 1;
    int minute = -160;
    char *expected_clock_text = "22:20";
@@ -214,7 +214,7 @@ void test_negative_minutes_roll_over(void)
 
 void test_negative_minutes_roll_over_continuously(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 1;
    int minute = -4820;
    char *expected_clock_text = "16:40";
@@ -224,7 +224,7 @@ void test_negative_minutes_roll_over_continuously(void)
 
 void test_negative_hour_and_minutes_both_roll_over(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = -25;
    int minute = -160;
    char *expected_clock_text = "20:20";
@@ -234,7 +234,7 @@ void test_negative_hour_and_minutes_both_roll_over(void)
 
 void test_negative_hour_and_minutes_both_roll_over_continuously(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = -121;
    int minute = -5810;
    char *expected_clock_text = "22:10";
@@ -244,7 +244,7 @@ void test_negative_hour_and_minutes_both_roll_over_continuously(void)
 
 void test_add_minutes(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 10;
    int minute = 0;
    int minute_offset = 3;
@@ -256,7 +256,7 @@ void test_add_minutes(void)
 
 void test_add_no_minutes(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 6;
    int minute = 41;
    int minute_offset = 0;
@@ -268,7 +268,7 @@ void test_add_no_minutes(void)
 
 void test_add_to_next_hour(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 0;
    int minute = 45;
    int minute_offset = 40;
@@ -280,7 +280,7 @@ void test_add_to_next_hour(void)
 
 void test_add_more_than_one_hour(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 10;
    int minute = 0;
    int minute_offset = 61;
@@ -292,7 +292,7 @@ void test_add_more_than_one_hour(void)
 
 void test_add_more_than_two_hours_with_carry(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 0;
    int minute = 45;
    int minute_offset = 160;
@@ -304,7 +304,7 @@ void test_add_more_than_two_hours_with_carry(void)
 
 void test_add_across_midnight(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 23;
    int minute = 59;
    int minute_offset = 2;
@@ -316,7 +316,7 @@ void test_add_across_midnight(void)
 
 void test_add_more_than_one_day(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 5;
    int minute = 32;
    int minute_offset = 1500;
@@ -328,7 +328,7 @@ void test_add_more_than_one_day(void)
 
 void test_add_more_than_two_days(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 1;
    int minute = 1;
    int minute_offset = 3500;
@@ -340,7 +340,7 @@ void test_add_more_than_two_days(void)
 
 void test_subtract_minutes(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 10;
    int minute = 3;
    int minute_offset = -3;
@@ -352,7 +352,7 @@ void test_subtract_minutes(void)
 
 void test_subtract_to_previous_hour(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 10;
    int minute = 3;
    int minute_offset = -30;
@@ -364,7 +364,7 @@ void test_subtract_to_previous_hour(void)
 
 void test_subtract_more_than_an_hour(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 10;
    int minute = 3;
    int minute_offset = -70;
@@ -376,7 +376,7 @@ void test_subtract_more_than_an_hour(void)
 
 void test_subtract_across_midnight(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 0;
    int minute = 3;
    int minute_offset = -4;
@@ -388,7 +388,7 @@ void test_subtract_across_midnight(void)
 
 void test_subtract_more_than_two_hours(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 0;
    int minute = 0;
    int minute_offset = -160;
@@ -400,7 +400,7 @@ void test_subtract_more_than_two_hours(void)
 
 void test_subtract_more_than_two_hours_with_borrow(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 6;
    int minute = 15;
    int minute_offset = -160;
@@ -412,7 +412,7 @@ void test_subtract_more_than_two_hours_with_borrow(void)
 
 void test_subtract_more_than_one_day(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 5;
    int minute = 32;
    int minute_offset = -1500;
@@ -424,7 +424,7 @@ void test_subtract_more_than_one_day(void)
 
 void test_subtract_more_than_two_days(void)
 {
-   TEST_IGNORE();
+   //TEST_IGNORE();
    int hour = 2;
    int minute = 20;
    int minute_offset = -3000;
