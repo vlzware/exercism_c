@@ -1,4 +1,5 @@
 #include "robot_simulator.h"
+#include <stddef.h>
 
 robot_grid_status_t robot_init(void)
 {
@@ -13,6 +14,7 @@ robot_grid_status_t robot_init_with_position(int bearing, int x, int y)
 {
 	if (bearing < 0 || bearing >= HEADING_MAX)
 		bearing = DEFAULT_BEARING;
+
 	bearing_t b = (bearing_t) bearing;
 	robot_grid_status_t grid = { b, {x, y} };
 	return grid;
@@ -20,6 +22,9 @@ robot_grid_status_t robot_init_with_position(int bearing, int x, int y)
 
 void robot_turn_right(robot_grid_status_t *robot)
 {
+	if (robot == NULL)
+		return;
+
 	int b = robot->bearing;
 	robot->bearing =
 		((bearing_t) (b + 1) == HEADING_MAX)?
@@ -28,6 +33,9 @@ void robot_turn_right(robot_grid_status_t *robot)
 
 void robot_turn_left(robot_grid_status_t *robot)
 {
+	if (robot == NULL)
+		return;
+
 	int b = robot->bearing;
 	robot->bearing =
 		((bearing_t) b == HEADING_NORTH)?
@@ -37,6 +45,9 @@ void robot_turn_left(robot_grid_status_t *robot)
 
 void robot_advance(robot_grid_status_t *robot)
 {
+	if (robot == NULL)
+		return;
+
 	switch (robot->bearing) {
 	case HEADING_NORTH:
 		robot->grid.y_position++;
@@ -57,6 +68,9 @@ void robot_advance(robot_grid_status_t *robot)
 
 void robot_simulator(robot_grid_status_t *robot, const char *commands)
 {
+	if (robot == NULL || commands == NULL)
+		return;
+
 	char *cmd = (char*) commands;
 	while (*cmd) {
 		switch (*cmd) {
