@@ -3,12 +3,14 @@
 
 int aliquot(int n)
 {
-	if (n < 4)
+	if (n < 2)
 		return 0;
+	if (n < 4)
+		return 1;
 
 	int res = 0;
 	int i;
-	int up = sqrt(n);
+	int up = (int) sqrt(n);
 	for (i = 2; i <= up; i++)
 		if (n % i == 0)
 			res += (i == n/i)? i : (i + n/i);
