@@ -21,7 +21,6 @@ size_t rebase(int8_t digits[], int16_t input_base, int16_t output_base,
 	)
 		return 0;
 
-
 	/* consume leading zeros - how I think it should be */
 	int start = 0;
 	while (digits[start] == 0)
