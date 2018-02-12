@@ -2,20 +2,23 @@
 #define PALINDROME_PRODUCTS_H
 
 struct factors {
-	unsigned int factor_a;
-	unsigned int factor_b;
+	int factor_a;
+	int factor_b;
 	struct factors *next;
 };
 
+typedef struct factors factor_t;
+
 struct product {
-	unsigned int smallest;
-	unsigned int largest;
-	struct factors *factors_sm;
-	struct factors *factors_lg;
+	int smallest;
+	int largest;
+	factor_t *factors_sm;
+	factor_t *factors_lg;
 };
 
 typedef struct product product_t;
 
-product_t get_palindrome_product(unsigned int from, unsigned int to);
+product_t *get_palindrome_product(int from, int to);
+void free_product(product_t *p);
 
 #endif

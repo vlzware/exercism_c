@@ -1,44 +1,90 @@
 #include "palindrome_products.h"
+#include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
 
 int palindrome(int n);
-void addfactors(product_t p, int i, int k);
+void addfactors(factor_t **p, int i, int k);
+void check_alloc(void *p);
+void swap(int *i, int *k);
 
-product_t get_palindrome_product(unsigned int from, unsigned int to)
+product_t *get_palindrome_product(int from, int to)
 {
-	if (from > to) {
-		from ^= to;
-		to ^= from;
-		from ^= to;
-	}
+	if (from > to)
+	 	swap(&from, &to);
 
-	product_t res;
-	res.smallest = from*to;
-	res.largest = from;
-	res.factors_lg = NULL;
-	res.factors_sm = NULL;
+	product_t *res = (product_t *) malloc(sizeof(product_t));
+	check_alloc(res);
 
-	unsigned int i, k, n;
+	res->smallest = INT_MAX;
+	res->largest = INT_MIN;
+	res->factors_lg = NULL;
+	res->factors_sm = NULL;
+
+	int i, k, n;
 	for (i = from; i <= to; i++)
 		for (k = i; k <= to; k++)
 			if (palindrome(n = i*k)) {
-				if (n <= res.smallest) {
-					res.smallest = n;
-					addfactors(res, i, k);
-				} else if (n >= res.largest) {
-					res.largest = n;
-					addfactors(res, i, k);
+				if (n <= res->smallest) {
+					res->smallest = n;
+					addfactors(&res->factors_sm, i, k);
+				} else if (n >= res->largest) {
+					res->largest = n;
+					addfactors(&res->factors_lg, i, k);
 				}
 			}
 
+	if (res->smallest == INT_MAX)
+		res->smallest = 0;
+	if (res->largest == INT_MIN)
+		res->largest = 0;
 	return res;
+}
+
+void free_ll(struct factors *p)
+{
+	if (p == NULL)
+		return;
+	if (p->next != NULL)
+		free_ll(p->next);
+	free(p);
+}
+
+void free_product(product_t *p)
+{
+	free_ll(p->factors_lg);
+	free_ll(p->factors_sm);
+	free(p);
+}
+
+void addfactors(factor_t **p, int i, int k)
+{
+	int n = i*k;
+	if ((*p == NULL) || (((*p)->factor_a) * (*p)->factor_b != n)) {
+		free_ll(*p);
+		*p = NULL;
+	}
+
+	factor_t *tmp = (factor_t*) malloc(sizeof(factor_t));
+	check_alloc(tmp);
+
+	tmp->next = *p;
+	tmp->factor_a = i;
+	tmp->factor_b = k;
+	*p = tmp;
+}
+
+void swap(int *i, int *k)
+{
+	*i ^= *k;
+	*k ^= *i;
+	*i ^= *k;
 }
 
 int palindrome(int n)
 {
 	if (n < 0)
-		return 0;
-
+		n *= -1;
 	int r = 0;
 	int nn = n;
 
@@ -51,7 +97,10 @@ int palindrome(int n)
 	return (nn == r);
 }
 
-void addfactors(product_t p, int i, int k)
+void check_alloc(void *p)
 {
-	p = p; i = i; k = k;
+	if (p == NULL) {
+		fprintf(stderr, "Memory error!\n");
+		exit(1);
+	}
 }
