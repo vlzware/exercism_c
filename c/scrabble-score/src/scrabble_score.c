@@ -10,10 +10,11 @@ int score(const char *input)
 		return 0;
 
 	const int scrabble[ALL] = {
-	/*	A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P */
-		1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3,
-		10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
-	/*	Q   R  S  T  U  V  W  X  Y  Z */
+	/*	A  B  C  D  E  F  G  H  I  J  K  L  M  */
+		1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3,
+		1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
+	/*	N, O  P  Q   R  S  T  U  V  W  X  Y  Z */
+
 	int res = 0;
 	int tmp;
 	while (*input)
