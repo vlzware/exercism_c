@@ -4,7 +4,7 @@
 #include <limits.h>
 
 static int palindrome(int n);
-static int addfactors(factor_t **p, int i, int k);
+static int addfactors(factor_t ** p, int i, int k);
 static void free_ll(struct factors *p);
 
 product_t *get_palindrome_product(int from, int to)
@@ -22,9 +22,8 @@ product_t *get_palindrome_product(int from, int to)
 	res->factors_sm = NULL;
 
 	if (from > to) {
-		snprintf(res->error, MAXERR -1,
-			"invalid input: min is %i and max is %i",
-			from, to);
+		snprintf(res->error, MAXERR - 1,
+			 "invalid input: min is %i and max is %i", from, to);
 		return res;
 	}
 
@@ -32,13 +31,15 @@ product_t *get_palindrome_product(int from, int to)
 	int err = 0;
 	for (i = from; i <= to; i++)
 		for (k = i; k <= to; k++)
-			if (palindrome(n = i*k)) {
+			if (palindrome(n = i * k)) {
 				if (n <= res->smallest) {
 					res->smallest = n;
-					err = addfactors(&res->factors_sm, i, k);
+					err =
+					    addfactors(&res->factors_sm, i, k);
 				} else if (n >= res->largest) {
 					res->largest = n;
-					err = addfactors(&res->factors_lg, i, k);
+					err =
+					    addfactors(&res->factors_lg, i, k);
 				}
 				if (err) {
 					free(res);
@@ -47,15 +48,15 @@ product_t *get_palindrome_product(int from, int to)
 			}
 
 	if ((res->smallest == INT_MAX) || (res->largest == INT_MIN)) {
-		snprintf(res->error, MAXERR -1,
-		"no palindrome with factors in the range %i to %i",
-		from, to);
+		snprintf(res->error, MAXERR - 1,
+			 "no palindrome with factors in the range %i to %i",
+			 from, to);
 		return res;
 	}
 	return res;
 }
 
-void free_product(product_t *p)
+void free_product(product_t * p)
 {
 	if (p == NULL)
 		return;
@@ -73,9 +74,9 @@ static void free_ll(struct factors *p)
 	free(p);
 }
 
-static int addfactors(factor_t **p, int i, int k)
+static int addfactors(factor_t ** p, int i, int k)
 {
-	int n = i*k;
+	int n = i * k;
 	if ((*p == NULL) || (((*p)->factor_a) * (*p)->factor_b != n)) {
 		free_ll(*p);
 		*p = NULL;

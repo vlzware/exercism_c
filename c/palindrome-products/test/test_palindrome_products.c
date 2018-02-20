@@ -9,7 +9,7 @@ void tearDown(void)
 {
 }
 
-void check_factors(factor_t *actual, int depth, factor_t expected[])
+void check_factors(factor_t * actual, int depth, factor_t expected[])
 {
    if (depth == 0) {
       TEST_ASSERT_EQUAL_PTR(NULL, actual);
@@ -138,7 +138,7 @@ void test_empty_result_for_smallest_if_no_palindrome_in_the_range(void)
    product_t *product = get_palindrome_product(1002, 1003);
    TEST_ASSERT_NOT_NULL(product);
    const char *expected =
-   	"no palindrome with factors in the range 1002 to 1003";
+       "no palindrome with factors in the range 1002 to 1003";
    TEST_ASSERT_EQUAL_STRING(expected, product->error);
 
    free_product(product);
